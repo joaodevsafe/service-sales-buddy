@@ -3,6 +3,8 @@ import { AppProvider } from '@/context/AppContext';
 import { Sidebar } from '@/components/Layout/Sidebar';
 import { Dashboard } from '@/components/Dashboard/Dashboard';
 import { CustomerList } from '@/components/Customers/CustomerList';
+import { ServiceOrderList } from '@/components/Services/ServiceOrderList';
+import { ProductList } from '@/components/Products/ProductList';
 
 export function TechAssistApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,23 +16,9 @@ export function TechAssistApp() {
       case 'customers':
         return <CustomerList />;
       case 'services':
-        return (
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Ordens de Serviço</h2>
-              <p className="text-muted-foreground">Em desenvolvimento...</p>
-            </div>
-          </div>
-        );
+        return <ServiceOrderList />;
       case 'products':
-        return (
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Controle de Estoque</h2>
-              <p className="text-muted-foreground">Em desenvolvimento...</p>
-            </div>
-          </div>
-        );
+        return <ProductList />;
       case 'sales':
         return (
           <div className="flex items-center justify-center h-96">
