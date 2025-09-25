@@ -6,15 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ServiceOrderForm } from './ServiceOrderForm';
-import { Plus, Search, Phone, Wrench, Clock, CheckCircle, Truck } from 'lucide-react';
+import { Plus, Search, Phone, Wrench, Clock, CheckCircle, Truck, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const statusConfig: Record<ServiceOrder['status'], { label: string; variant: 'warning' | 'default' | 'success' | 'secondary'; icon: React.ComponentType<any> }> = {
-  analyzing: { label: 'Em Análise', variant: 'warning', icon: Clock },
+const statusConfig: Record<ServiceOrder['status'], { label: string; variant: 'destructive' | 'default' | 'secondary' | 'outline'; icon: React.ComponentType<any> }> = {
+  analyzing: { label: 'Em Análise', variant: 'destructive', icon: Clock },
   repairing: { label: 'Em Reparo', variant: 'default', icon: Wrench },
-  completed: { label: 'Concluído', variant: 'success', icon: CheckCircle },
-  delivered: { label: 'Entregue', variant: 'secondary', icon: Truck }
+  completed: { label: 'Concluído', variant: 'secondary', icon: CheckCircle },
+  delivered: { label: 'Entregue', variant: 'outline', icon: Truck }
 };
 
 export function ServiceOrderList() {
@@ -37,6 +37,67 @@ export function ServiceOrderList() {
   const handleCloseForm = () => {
     setShowForm(false);
     setEditingOrder(null);
+  };
+
+  const generateOrderReport = (order: ServiceOrder) => {
+    let report = `=== ORDEM DE SERVIÇO ===\n\n`;
+    report += `Nº: ${order.id.slice(-6).toUpperCase()}\n`;
+    report += `Data: ${format(new Date(order.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n\n`;
+    
+    report += `=== CLIENTE ===\n`;
+    report += `Nome: ${order.customerName}\n\n`;
+    
+    report += `=== EQUIPAMENTO ===\n`;
+    report += `Aparelho: ${order.device}\n`;
+    report += `Problema: ${order.issue}\n\n`;
+    
+    report += `=== STATUS ===\n`;
+    report += `Status: ${statusConfig[order.status].label}\n`;
+    
+    if (order.estimatedCost) {
+      report += `Orçamento: R$ ${order.estimatedCost.toFixed(2)}\n`;
+    }
+    
+    if (order.finalCost) {
+      report += `Valor Final: R$ ${order.finalCost.toFixed(2)}\n`;
+    }
+    
+    if (order.completedAt) {
+      report += `Concluído em: ${format(new Date(order.completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
+    }
+    
+    if (order.notes) {
+      report += `\n=== OBSERVAÇÕES ===\n`;
+      report += `${order.notes}\n`;
+    }
+    
+    report += `\n==================\n`;
+    report += `Obrigado pela confiança!`;
+    
+    return report;
+  };
+
+  const printOrder = (order: ServiceOrder) => {
+    const reportText = generateOrderReport(order);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Ordem de Serviço - ${order.id.slice(-6).toUpperCase()}</title>
+            <style>
+              body { font-family: 'Courier New', monospace; padding: 20px; }
+              pre { white-space: pre-wrap; }
+            </style>
+          </head>
+          <body>
+            <pre>${reportText}</pre>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
   };
 
   if (showForm) {
@@ -149,13 +210,24 @@ export function ServiceOrderList() {
                           </span>
                         )}
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEdit(order)}
-                      >
-                        Editar
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => printOrder(order)}
+                          className="gap-2"
+                        >
+                          <Printer className="h-4 w-4" />
+                          Imprimir
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEdit(order)}
+                        >
+                          Editar
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

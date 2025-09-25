@@ -6,6 +6,7 @@ import { CustomerList } from '@/components/Customers/CustomerList';
 import { ServiceOrderList } from '@/components/Services/ServiceOrderList';
 import { ProductList } from '@/components/Products/ProductList';
 import { SaleList } from '@/components/Sales/SaleList';
+import { ReportsList } from '@/components/Reports/ReportsList';
 
 export function TechAssistApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -23,14 +24,7 @@ export function TechAssistApp() {
       case 'sales':
         return <SaleList />;
       case 'reports':
-        return (
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Relatórios</h2>
-              <p className="text-muted-foreground">Em desenvolvimento...</p>
-            </div>
-          </div>
-        );
+        return <ReportsList />;
       default:
         return <Dashboard />;
     }
