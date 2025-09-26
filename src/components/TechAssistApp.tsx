@@ -7,6 +7,7 @@ import { ServiceOrderList } from '@/components/Services/ServiceOrderList';
 import { ProductList } from '@/components/Products/ProductList';
 import { SaleList } from '@/components/Sales/SaleList';
 import { ReportsList } from '@/components/Reports/ReportsList';
+import { Settings } from '@/components/Settings/Settings';
 
 export function TechAssistApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -25,6 +26,8 @@ export function TechAssistApp() {
         return <SaleList />;
       case 'reports':
         return <ReportsList />;
+      case 'settings':
+        return <Settings />;
       default:
         return <Dashboard />;
     }

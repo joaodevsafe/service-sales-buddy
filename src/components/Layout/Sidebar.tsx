@@ -59,7 +59,16 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       </nav>
       
       <div className="p-4 border-t border-border">
-        <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors hover:bg-secondary/50 text-muted-foreground">
+        <button 
+          onClick={() => onTabChange('settings')}
+          className={cn(
+            "w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200",
+            "hover:bg-secondary/50",
+            activeTab === 'settings'
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "text-muted-foreground"
+          )}
+        >
           <Settings className="h-5 w-5" />
           <span className="font-medium">Configurações</span>
         </button>
