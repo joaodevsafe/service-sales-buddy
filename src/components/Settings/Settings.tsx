@@ -22,13 +22,16 @@ import { useToast } from '@/hooks/use-toast';
 
 export function Settings() {
   const { toast } = useToast();
-  const [companySettings, setCompanySettings] = useState({
-    name: 'TechAssist',
-    address: '',
-    phone: '',
-    email: '',
-    cnpj: '',
-    logo: ''
+  const [companySettings, setCompanySettings] = useState(() => {
+    const saved = localStorage.getItem('companySettings');
+    return saved ? JSON.parse(saved) : {
+      name: 'JPSOLUTECH',
+      address: '',
+      phone: '',
+      email: '',
+      cnpj: '',
+      logo: ''
+    };
   });
 
   const [userSettings, setUserSettings] = useState({
@@ -39,12 +42,15 @@ export function Settings() {
     soundEffects: false
   });
 
-  const [systemSettings, setSystemSettings] = useState({
-    autoBackup: true,
-    lowStockAlert: 5,
-    defaultServiceWarranty: 90,
-    printReceipts: true,
-    darkMode: false
+  const [systemSettings, setSystemSettings] = useState(() => {
+    const saved = localStorage.getItem('systemSettings');
+    return saved ? JSON.parse(saved) : {
+      autoBackup: true,
+      lowStockAlert: 5,
+      defaultServiceWarranty: 90,
+      printReceipts: true,
+      darkMode: false
+    };
   });
 
   const handleSaveCompany = () => {
@@ -212,17 +218,33 @@ export function Settings() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-address">Endereço</Label>
-                <Textarea
-                  id="company-address"
-                  value={companySettings.address}
-                  onChange={(e) => setCompanySettings({
-                    ...companySettings,
-                    address: e.target.value
-                  })}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company-address">Endereço</Label>
+                  <Textarea
+                    id="company-address"
+                    value={companySettings.address}
+                    onChange={(e) => setCompanySettings({
+                      ...companySettings,
+                      address: e.target.value
+                    })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company-logo">Logo da Empresa (URL)</Label>
+                  <Input
+                    id="company-logo"
+                    type="url"
+                    placeholder="https://exemplo.com/logo.png (opcional)"
+                    value={companySettings.logo}
+                    onChange={(e) => setCompanySettings({
+                      ...companySettings,
+                      logo: e.target.value
+                    })}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Deixe em branco para usar a logo padrão JPSOLUTECH
+                  </p>
+                </div>
               <Button onClick={handleSaveCompany}>
                 <Save className="h-4 w-4 mr-2" />
                 Salvar Configurações

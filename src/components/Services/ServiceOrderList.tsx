@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ServiceOrderForm } from './ServiceOrderForm';
+import { printServiceOrder } from './ServiceOrderPrint';
 import { Plus, Search, Phone, Wrench, Clock, CheckCircle, Truck, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -39,65 +40,13 @@ export function ServiceOrderList() {
     setEditingOrder(null);
   };
 
-  const generateOrderReport = (order: ServiceOrder) => {
-    let report = `=== ORDEM DE SERVIÇO ===\n\n`;
-    report += `Nº: ${order.id.slice(-6).toUpperCase()}\n`;
-    report += `Data: ${format(new Date(order.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n\n`;
-    
-    report += `=== CLIENTE ===\n`;
-    report += `Nome: ${order.customerName}\n\n`;
-    
-    report += `=== EQUIPAMENTO ===\n`;
-    report += `Aparelho: ${order.device}\n`;
-    report += `Problema: ${order.issue}\n\n`;
-    
-    report += `=== STATUS ===\n`;
-    report += `Status: ${statusConfig[order.status].label}\n`;
-    
-    if (order.estimatedCost) {
-      report += `Orçamento: R$ ${order.estimatedCost.toFixed(2)}\n`;
-    }
-    
-    if (order.finalCost) {
-      report += `Valor Final: R$ ${order.finalCost.toFixed(2)}\n`;
-    }
-    
-    if (order.completedAt) {
-      report += `Concluído em: ${format(new Date(order.completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}\n`;
-    }
-    
-    if (order.notes) {
-      report += `\n=== OBSERVAÇÕES ===\n`;
-      report += `${order.notes}\n`;
-    }
-    
-    report += `\n==================\n`;
-    report += `Obrigado pela confiança!`;
-    
-    return report;
-  };
-
   const printOrder = (order: ServiceOrder) => {
-    const reportText = generateOrderReport(order);
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Ordem de Serviço - ${order.id.slice(-6).toUpperCase()}</title>
-            <style>
-              body { font-family: 'Courier New', monospace; padding: 20px; }
-              pre { white-space: pre-wrap; }
-            </style>
-          </head>
-          <body>
-            <pre>${reportText}</pre>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
+    // Carregar configurações salvas
+    const companySettings = JSON.parse(localStorage.getItem('companySettings') || '{}');
+    const systemSettings = JSON.parse(localStorage.getItem('systemSettings') || '{}');
+    
+    // Usar nova função de impressão profissional
+    printServiceOrder(order, companySettings, systemSettings);
   };
 
   if (showForm) {
